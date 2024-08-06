@@ -4,7 +4,7 @@ import { ReactComponent as GitHub } from '../assets/github.svg';
 
 export function Footer() {
   return (
-    <div className=" pt-24 pb-5">
+    <div className=" pt-24 pb-5 mt-auto">
       <div className=" flex gap-5 justify-center items-center mb-4">
         <Link to={'https://t.me/d_shelepin'} target="_blank">
           <Telegram className=" w-8 h-8 hover:-rotate-12 transition-all" />
