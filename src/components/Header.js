@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import { Input } from './Input';
 import { debounce } from '../utils';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export function Header() {
+  const location = useLocation()
+  const navigate = useNavigate();
   const [isHeaderFloat, setIsHeaderFloat] = useState(false);
+  const searchInputRef = useRef();
 
   useEffect(() => {
     const onScroll = debounce(() => {
@@ -22,6 +25,32 @@ export function Header() {
       window.removeEventListener('scroll', onScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const onInput = debounce((event) => {
+      const value = event.target.value;
+      
+
+      navigate(value ? `/search?q=${value}` : '/');
+    }, 1000);
+
+    const searchInput = searchInputRef.current;
+
+    if (searchInput) {
+      searchInput.addEventListener('input', onInput);
+    }
+
+    return () => {
+      searchInput.removeEventListener('input', onInput);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
+    if(location.pathname !== '/search' && searchInputRef.current) {
+      searchInputRef.current.value = ''
+    }
+  }, [location.pathname])
+
   return (
     <header
       className={`${
@@ -33,7 +62,7 @@ export function Header() {
           <Logo className=" w-9 h-9 cursor-pointer hover:-rotate-12 transition-all" />
           <div className=" text-xl font-bold text-orange-500">Filmfo</div>
         </Link>
-        <Input />
+        <Input ref={searchInputRef} />
       </div>
     </header>
   );
